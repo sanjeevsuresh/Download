@@ -10,6 +10,27 @@ def createFolder(folderName):
     except FileExistsError:
         print("Folder already exists")
 
+def handler(signalNum,  frame):
+    raise KeyboardInterrupt
+
+
+def raw_input_with_timeout(prompt, timeout=5):
+    signal.signal(signal.SIGALRM, handler)
+    signal.alarm(timeout)
+    astring = None
+    try:
+        # timer.start()
+        astring = input(prompt)
+    except KeyboardInterrupt:
+        print("\nTimedOut!")
+    # timer.cancel()
+    signal.alarm(0)
+    return astring
+
+
+def ask(prompt,  timeout):
+    answer = raw_input_with_timeout(prompt, timeout)
+    return answer
 
 def askForExtensions():
     inputExtensions = input("Enter any extensions I should look for: ")
@@ -32,6 +53,11 @@ def correctIssues(userDefinedExtensions):
         print("Restarting...")
         return askForExtensions()
     return userDefinedExtensions
+
+def parodyBrowser(url):
+    hdr = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML,  like Gecko) Chrome/23.0.1271.64 Safari/537.11', 'Accept': 'text/html, application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 'Accept-Charset': 'ISO-8859-1, utf-8;q=0.7,*;q=0.3', 'Accept-Encoding': 'none', 'Accept-Language': 'en-US, en;q=0.8', 'Connection': 'keep-alive'}
+    req = urllib.request.Request(url, headers=hdr)
+    return req
 
 
 def main():
