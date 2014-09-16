@@ -64,20 +64,24 @@ def main():
     suggestedPage = input("Please enter the url of an online directory: ")
     aFolder = input("Please enter in a folder name to save your files...\n" +
                     "(you can create a subdirectory e.g. hw8/list) --> ")
-    webpage = urllib.request.urlopen(suggestedPage)
-    htmlByteObj = webpage.read()
-    htmlText = htmlByteObj.__repr__()
-    # print(htmlText)
+    webpageRequest = parodyBrowser(suggestedPage)
+    htmlPageResponse = urllib.request.urlopen(webpageRequest)
+    '''htmlByteObj = htmlPageResponse.read()
+    htmlText = htmlByteObj.__repr__()'''
+    #print(htmlText)
     inputExtensions = askForExtensions()
     createFolder(aFolder)
-    htmlPageSource = urllib.request.urlopen(suggestedPage)
-    print(type(htmlPageSource))
-    soup = BeautifulSoup(htmlPageSource)
+    print("Type of parameter for BeautifulSoup {0}".format(type(htmlPageResponse)))
+    print("Status: {0} {1}".format(htmlPageResponse.status, htmlPageResponse.reason))
+    soup = BeautifulSoup(htmlPageResponse)
     files = list()
-    allTags = soup.findAll('a')
+    allTags = soup.find_all("a")
+    allImages = soup.find_all("img")
+    print("All anchors:\n{0}".format(allTags))
+    print("All images:\n{0}".format(allImages))
     for tag in allTags:
         possibleFile = tag.get('href')
-        # print(possibleFile)
+        print(possibleFile)
         extensions = possibleFile.split(".")
         extension = extensions[len(extensions) - 1]
         if extension in inputExtensions:
